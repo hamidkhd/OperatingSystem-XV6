@@ -1,6 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "fcntl.h"
 
 int find_gcd(int a, int b)
 {
@@ -22,6 +23,7 @@ int find_lcm(int array[], int n)
     return result;
 } 
 
+
 int main(int argc, char *argv[])
 {  
     int *arr;
@@ -30,7 +32,9 @@ int main(int argc, char *argv[])
     for (int i = 0; i < (argc-1); i++) 
         arr[i] = atoi(argv[i+1]);
 
-    printf(1, "%d\n", find_lcm(arr, argc-1));
+    int file = open("lcm_result.txt", O_CREATE | O_WRONLY);
+    printf(file, "%d \n", find_lcm(arr, argc-1));
+    close(file);
     
     exit();  
 }  
