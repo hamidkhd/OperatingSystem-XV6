@@ -184,7 +184,7 @@ struct {
   uint r;  // Read index
   uint w;  // Write index
   uint e;  // Edit index
-} input, temp;
+} input, temp_input;
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -192,17 +192,18 @@ void
 consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
+  int counter;
   
   acquire(&cons.lock);
   while((c = getc()) >= 0){
     switch(c){ 
 
     case C('C'): 
-      strncpy(temp.buf, input.buf, sizeof(input.buf));
+      temp_input = input;
       break; 
 
     case C('X'):
-      strncpy(temp.buf, input.buf, sizeof(input.buf));
+      temp_input = input;
       while(input.e != input.w && input.buf[(input.e-1) % INPUT_BUF] != '\n')
       {
         input.e--;
@@ -211,6 +212,16 @@ consoleintr(int (*getc)(void))
       break;
 
     case C('V'): 
+      counter = temp_input.w;
+      while(counter != temp_input.e - temp_input.w)
+      {
+        input.buf[(input.e + counter) % INPUT_BUF] = temp_input.buf[counter % INPUT_BUF];
+        consputc(temp_input.buf[counter % INPUT_BUF]);
+        counter++;
+      }
+      input.e = (input.e + counter) % INPUT_BUF;
+      input.w = temp_input.w % INPUT_BUF;
+      input.r = temp_input.r % INPUT_BUF;
       break; 
 
     case C('B'): 
@@ -219,13 +230,17 @@ consoleintr(int (*getc)(void))
         input.e--;
         consputc(BACKSPACE);
       }
-      for (int i = input.w; i < input.e; i++)
+      counter = temp_input.w;
+      while(counter != temp_input.e - temp_input.w)
       {
-        input.buf[i] = temp.buf[i];
-        consputc(temp.buf[i]);
+        input.buf[(input.e + counter) % INPUT_BUF] = temp_input.buf[counter % INPUT_BUF];
+        consputc(temp_input.buf[counter % INPUT_BUF]);
+        counter++;
       }
-      
-      break;
+      input.e = (input.e + counter) % INPUT_BUF;
+      input.w = temp_input.w % INPUT_BUF;
+      input.r = temp_input.r % INPUT_BUF;
+      break; 
      
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
