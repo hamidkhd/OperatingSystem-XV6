@@ -184,7 +184,7 @@ struct {
   uint r;  // Read index
   uint w;  // Write index
   uint e;  // Edit index
-} input;
+} input, temp;
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -192,10 +192,41 @@ void
 consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
-
+  
   acquire(&cons.lock);
   while((c = getc()) >= 0){
-    switch(c){
+    switch(c){ 
+
+    case C('C'): 
+      strncpy(temp.buf, input.buf, sizeof(input.buf));
+      break; 
+
+    case C('X'):
+      strncpy(temp.buf, input.buf, sizeof(input.buf));
+      while(input.e != input.w && input.buf[(input.e-1) % INPUT_BUF] != '\n')
+      {
+        input.e--;
+        consputc(BACKSPACE);
+      }
+      break;
+
+    case C('V'): 
+      break; 
+
+    case C('B'): 
+      while(input.e != input.w && input.buf[(input.e-1) % INPUT_BUF] != '\n')
+      {
+        input.e--;
+        consputc(BACKSPACE);
+      }
+      for (int i = input.w; i < input.e; i++)
+      {
+        input.buf[i] = temp.buf[i];
+        consputc(temp.buf[i]);
+      }
+      
+      break;
+     
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
