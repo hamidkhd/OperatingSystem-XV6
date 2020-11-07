@@ -129,3 +129,12 @@ int sys_reverse_number(void)
 
   return 0;
 }
+
+int
+sys_get_children(void){
+  myproc()->call_nums[23] ++;
+  int pid;
+  if(argint(0, &pid) < 0)
+    return -1;
+  return children(pid);
+}

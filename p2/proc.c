@@ -705,3 +705,52 @@ int reverse_number(int n)
   return 0;
 
 }
+int
+children(int pid)
+{
+  struct proc *p;
+  
+  int childs[NPROC] = {-1};
+  int curr_index = 0;
+  int index = 0;
+  //int parent_pid = pid ; 
+
+  acquire(&ptable.lock);
+
+  for(int i = 0 ; i < NPROC ; i++){
+
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+      //cprintf("proc pid: %d with parent pid: %d \n",  p->pid, p->parent->pid);
+
+        if(p->parent->pid == pid){
+           childs[index] = p->pid ;
+           index++;
+         cprintf("parent pid ,%d", pid , "found child pid: %d \n",  p->pid);
+        }
+    }
+     if(childs[curr_index] == -1)
+         break;
+     else{
+       pid = childs[curr_index];
+       curr_index++;
+      } 
+  }
+  release(&ptable.lock);
+  
+  int pid_list = 0;
+  int cpy ; 
+
+  for(int i = 0 ; i < index ;i++){
+
+  cpy = childs[i];
+  while(cpy > 0){
+        pid_list *= 10;
+        cpy /= 10 ;
+     }
+  pid_list += childs[i];
+}
+
+
+  return pid_list;
+}

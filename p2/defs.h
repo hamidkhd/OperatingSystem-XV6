@@ -122,6 +122,7 @@ void            wakeup(void*);
 void            yield(void);
 int 			trace_syscalls(int);
 int             reverse_number(int);
+int             children(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
