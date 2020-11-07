@@ -181,10 +181,9 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_test\
+	_traceon\
 	_print_trace\
-	_tt\
-	_lab\
+	_traceoff\
 	_reverse_number\
 	_lcm\
 
@@ -258,7 +257,7 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c\
 	lcm.c\
-	test.c tt.c lab.c _reverse_number.c\
+	traceoff.c traceon.c _reverse_number.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 

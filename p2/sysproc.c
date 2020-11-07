@@ -104,7 +104,7 @@ int sys_trace_syscalls(void)
   int n;
   myproc()->call_nums[21] ++;
   if(argint(0, &n) == 0){
-    if(myproc()->pid == 3){
+    if(myproc()->pid == 2){
       trace_syscalls(2);
       return 0;
     }

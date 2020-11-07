@@ -1,5 +1,5 @@
 // Per-CPU state
-#define SYSNUM 23
+#define SYSNUM 24
 struct cpu {
   uchar apicid;                // Local APIC ID
   struct context *scheduler;   // swtch() here to enter scheduler

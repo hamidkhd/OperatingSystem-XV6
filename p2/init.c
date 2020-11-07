@@ -12,8 +12,6 @@ int
 main(void)
 {
   int pid, wpid;
-  //int poo;
-
   if(open("console", O_RDWR) < 0){
     mknod("console", 1, 1);
     open("console", O_RDWR);
@@ -29,34 +27,28 @@ main(void)
     }
     else
     {
-    printf(1, "init: starting sh\n");
-    printf(1, "init: starting sh\n");
-    printf(1, "***********************************\n");
-    printf(1, "Group Members:\n");
-    printf(1, "1- Melika Morafegh\n");
-    printf(1, "2- Nazanin Yousefian\n");
-    printf(1, "3- Hamidreza Khodadadi\n");
-    printf(1, "***********************************\n");
-    
-    pid = fork();
-    //poo = fork();
-    if(pid < 0){
-      printf(1, "init: fork failed\n");
-      exit();
+      printf(1, "init: starting sh\n");
+      printf(1, "init: starting sh\n");
+      printf(1, "***********************************\n");
+      printf(1, "Group Members:\n");
+      printf(1, "1- Melika Morafegh\n");
+      printf(1, "2- Nazanin Yousefian\n");
+      printf(1, "3- Hamidreza Khodadadi\n");
+      printf(1, "***********************************\n");
+      
+      pid = fork();
+      if(pid < 0){
+        printf(1, "init: fork failed\n");
+        exit();
+      }
+      if(pid == 0){
+        exec("sh", argv);
+        printf(1, "init: exec sh failed\n");
+        exit();
+      }
+     
+      while((wpid=wait()) >= 0 && wpid != pid)// && wpid != poo)
+        printf(1, "zombie!\n");
     }
-    if(pid == 0){
-      exec("sh", argv);
-      printf(1, "init: exec sh failed\n");
-      exit();
-    }
-    // if(poo == 0){
-    //   exec("print_trace", arg);
-    //   printf(1, "init: exec print_trace failed\n");
-    //   exit();
-
-    // }
-    while((wpid=wait()) >= 0 && wpid != pid)// && wpid != poo)
-      printf(1, "zombie!\n");
   }
-}
 }

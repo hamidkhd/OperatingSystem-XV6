@@ -603,6 +603,12 @@ void print_name(int num)
     case 22:
       cprintf("Trace_syscalls");
       break;
+    case 23:
+      cprintf("Reverse_number");
+      break;
+    case 24:
+      cprintf("Get_children");
+      break;
   }
 
 }
