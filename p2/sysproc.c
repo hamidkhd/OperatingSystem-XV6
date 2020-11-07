@@ -99,7 +99,8 @@ sys_uptime(void)
   return xticks;
 }
 
-int sys_trace_syscalls(void){
+int sys_trace_syscalls(void)
+{
   int n;
   myproc()->call_nums[21] ++;
   if(argint(0, &n) == 0){
@@ -117,5 +118,14 @@ int sys_trace_syscalls(void){
   }
   else
     return -1;
-  
+}
+
+int sys_reverse_number(void)
+{
+  myproc()->call_nums[22] ++;
+  int n;
+  asm("movl %%edi, %0;" : "=r"(n)); 
+  reverse_number(n);
+
+  return 0;
 }

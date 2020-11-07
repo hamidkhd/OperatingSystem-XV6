@@ -21,3 +21,4 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_trace_syscalls  22
+#define SYS_reverse_number 23

@@ -533,8 +533,10 @@ procdump(void)
   }
 }
 
-void print_name(int num){
-  switch(num){
+void print_name(int num)
+{
+  switch(num)
+  {
     case 1:
       cprintf("Fork");
       break;
@@ -606,7 +608,8 @@ void print_name(int num){
 }
 void allone(void){
   struct proc *p;
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
 
     if(strlen(p->name) == 0)
       break;
@@ -616,10 +619,12 @@ void allone(void){
   
 
 }
-void all_zero(void){
+void all_zero(void)
+{
   struct proc *p;
   int i;
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
     if(strlen(p->name) == 0)
       break;
     p->print_state = 0;
@@ -631,20 +636,23 @@ void all_zero(void){
 
 }
 
-int trace_syscalls(int state){
+int trace_syscalls(int state)
+{
   
   struct proc *p;
   int i;
-  if( state == 1 || (state == 2 && ptable.proc -> print_state)){
-
-  
-
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  if( state == 1 || (state == 2 && ptable.proc -> print_state))
+  {
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    {
       if(strlen(p->name) == 0)
         break;
+
       p->print_state = 1;
       cprintf("%s:\n",p->name);
-      for (i =0; i < SYSNUM; i++){
+
+      for (i =0; i < SYSNUM; i++)
+      {
         cprintf("   ");
         print_name(i + 1);
         cprintf(": %d\n", p->call_nums[i]);
@@ -653,7 +661,9 @@ int trace_syscalls(int state){
     }
     return 0;
   }
-  if(state == 0){
+
+  if(state == 0)
+  {
     all_zero();
     return 0;
   }
@@ -661,3 +671,31 @@ int trace_syscalls(int state){
  
 }
 
+int reverse_number(int n)
+{
+  cprintf("%d\n",n);
+
+  int digit = 0;
+  int temp = n;
+
+  while (temp)
+  {
+    ++digit;
+    temp /= 10;
+  }
+
+  int array[200] = {0};
+  
+  for (int i = 0; i < digit; i++) 
+    {
+      array[i] = n % 10;
+      n /= 10;
+    }
+  
+  for(int j = 0; j < digit; j++)
+    cprintf("%d", array[j]);
+  cprintf("\n");
+
+  return 0;
+
+}

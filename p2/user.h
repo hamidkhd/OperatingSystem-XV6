@@ -24,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int trace_syscalls(int);
+int reverse_number(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
