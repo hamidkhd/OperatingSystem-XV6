@@ -17,8 +17,11 @@ int main(int argc, char *argv[])
     asm("movl %%edi, %0;" : "=r"(prev_value)); 
 
     asm("movl %0, %%edi;" : : "r"(n)); 
+    
+    asm("movl $23, %%eax;" :);
+    asm("int $64");
 
-    reverse_number();
+    //reverse_number();
 
     asm("movl %0, %%edi;" : : "r"(prev_value)); 
 

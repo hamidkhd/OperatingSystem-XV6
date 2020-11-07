@@ -184,7 +184,7 @@ struct {
   uint r;  // Read index
   uint w;  // Write index
   uint e;  // Edit index
-} input;
+} input, temp_input;
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -192,10 +192,50 @@ void
 consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
-
+  int counter;
+  
   acquire(&cons.lock);
   while((c = getc()) >= 0){
-    switch(c){
+    switch(c){ 
+
+    case C('C'): 
+      temp_input = input;
+      break; 
+
+    case C('X'):
+      temp_input = input;
+      while(input.e != input.w && input.buf[(input.e-1) % INPUT_BUF] != '\n')
+      {
+        input.e--;
+        consputc(BACKSPACE);
+      }
+      break;
+
+    case C('V'): 
+      counter = temp_input.w;
+      while(counter < temp_input.e)
+      {
+        input.buf[input.e++ % INPUT_BUF] = temp_input.buf[counter % INPUT_BUF];
+        consputc(temp_input.buf[counter % INPUT_BUF]);
+        counter++;
+      }
+      break; 
+
+    case C('B'): 
+      while(input.e != input.w && input.buf[(input.e-1) % INPUT_BUF] != '\n')
+      {
+        input.e--;
+        consputc(BACKSPACE);
+      }
+      counter = temp_input.w;
+      while(counter < temp_input.e)
+      {
+        input.buf[input.e++ % INPUT_BUF] = temp_input.buf[counter % INPUT_BUF];
+        consputc(temp_input.buf[counter % INPUT_BUF]);
+        counter++;
+      }
+      break; 
+     
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
@@ -296,4 +336,3 @@ consoleinit(void)
 
   ioapicenable(IRQ_KBD, 0);
 }
-
