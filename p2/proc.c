@@ -721,12 +721,12 @@ children(int pid)
 
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-      //cprintf("proc pid: %d with parent pid: %d \n",  p->pid, p->parent->pid);
+      //cprintf("proc pid: %d  parent pid: %d \n",  p->pid, p->parent->pid);
 
         if(p->parent->pid == pid){
            childs[index] = p->pid ;
            index++;
-         cprintf("parent pid ,%d", pid , "found child pid: %d \n",  p->pid);
+       //  cprintf(" parent pid ,%d", pid , " child pid: %d \n",  p->pid);
         }
     }
      if(childs[curr_index] == -1)
