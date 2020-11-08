@@ -679,7 +679,6 @@ int trace_syscalls(int state)
 
 int reverse_number(int n)
 {
-  cprintf("%d\n",n);
 
   int digit = 0;
   int temp = n;
