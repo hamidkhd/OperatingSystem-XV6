@@ -26,11 +26,11 @@ int uptime(void);
 int trace_syscalls(int);
 int reverse_number(void);
 int get_children(int);
-int change_process_queue(int);
-int quantify_lottery_tickets(int);
-int quantify_BJF_parameters_process_level(int);
-int quantify_BJF_parameters_kernel_level(int);
-int print_information(int);
+void change_process_queue(int, int);
+void quantify_lottery_tickets(int, int);
+void quantify_BJF_parameters_process_level(int, int, int, int);
+void quantify_BJF_parameters_kernel_level(int, int, int);
+void print_information(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
