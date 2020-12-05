@@ -53,13 +53,12 @@ struct proc {
   int call_nums[SYSNUM];
   int print_state;
   int level;
-  int priority, priority_ratio;
-  int arrivt, arrivt_ratio;
-  int exect, exect_ratio;
+  float priority, priority_ratio;
+  float arrivt, arrivt_ratio;
+  float exect, exect_ratio;
   int lottery_ticket;
   int visit;
   int waiting_time, last_cycle;
-  int rank;
 };
 
 // Process memory is laid out contiguously, low addresses first:
