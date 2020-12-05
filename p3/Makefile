@@ -188,6 +188,8 @@ UPROGS=\
 	_lcm\
 	_get_children\
 	_lab\
+	_change_process_queue\
+	_quantify_lottery_tickets\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -260,6 +262,8 @@ EXTRA=\
 	printf.c umalloc.c\
 	lcm.c\
 	traceoff.c traceon.c _reverse_number.c get_children.c lab.c\
+	change_process_queue.c\
+	quantify_lottery_tickets.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 

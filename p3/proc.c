@@ -111,6 +111,7 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+ 
 
   return p;
 }
@@ -120,6 +121,20 @@ found:
 void
 userinit(void)
 {
+  // myproc()->call_nums[0] ++;
+  // myproc()->level = 1;
+  // myproc()->visit = 0;
+  // myproc()->waiting_time = 0;
+  // myproc()->last_cycle = 0;
+  // //int random = gen_rand(100);
+  // //myproc()->lottery_ticket = random;
+  // //myproc()->priority = 1/random;
+  // //myproc()->priority_ratio = gen_rand(50) / 100;
+  // myproc()->arrivt = ticks;
+  // //myproc()->arrivt_ratio = gen_rand(50) / 100;
+  // myproc()->exect = 0.1;
+  //myproc()->exect_ratio = gen_rand(50) / 100;
+ 
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
@@ -438,7 +453,7 @@ scheduler(void)
     int index3 = 0;
     int run1 = 0, run2 =0, run3 = 0;
     
-    for(p = ptable.proc; p >= &ptable.proc[NPROC]; p++){
+    for(p = ptable.proc; p <= &ptable.proc[NPROC]; p++){
       if (strlen(p->name) == 0)
         break;
     
@@ -482,47 +497,41 @@ scheduler(void)
       p = BJF(level3, index3);
 
 
-
-
-    release(&ptable.lock);
-    
-
     // Switch to chosen process.  It is the process's job
     // to release ptable.lock and then reacquire it
     // before jumping back to us.
-    p->waiting_time = 0;
-    p->last_cycle = cycle;
-    c->proc = p;
-    switchuvm(p);
-    p->state = RUNNING;
-    if (p -> level == 3)
-      p -> exect += 0.1;
+    if (run1 || run2 || run3){
+      p->waiting_time = 0;
+      p->last_cycle = cycle;
+      c->proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+      if (p -> level == 3)
+        p -> exect += 0.1;
 
-    swtch(&(c->scheduler), p->context);
-    switchkvm();
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
 
-    // Process is done running for now.
-    // It should have changed its p->state before coming back.
-    c->proc = 0;
-    cycle += 1;
-    struct proc *prc;
-    for(prc = ptable.proc; prc >= &ptable.proc[NPROC]; prc++){
-      if (strlen(prc->name) == 0)
-        break;
-      if (prc == p)
-        continue;
-      prc->waiting_time++;
-      if(prc->waiting_time - prc->last_cycle >= 10000){
-        prc->level = 1;
-        prc->waiting_time = 0;
-        prc->last_cycle = cycle;
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+      cycle += 1;
+      struct proc *prc;
+      for(prc = ptable.proc; prc >= &ptable.proc[NPROC]; prc++){
+        if (strlen(prc->name) == 0)
+          break;
+        if (prc == p)
+          continue;
+        prc->waiting_time++;
+        if(prc->waiting_time - prc->last_cycle >= 10000){
+          prc->level = 1;
+          prc->waiting_time = 0;
+          prc->last_cycle = cycle;
+        }
+
       }
-
     }
-
-    
-    
-
+  release(&ptable.lock);
   }
 }
 
@@ -567,6 +576,20 @@ yield(void)
 void
 forkret(void)
 {
+  myproc()->call_nums[0] ++;
+  myproc()->level = 1;
+  myproc()->visit = 0;
+  myproc()->waiting_time = 0;
+  myproc()->last_cycle = 0;
+  //int random = gen_rand(100);
+  //myproc()->lottery_ticket = random;
+  //myproc()->priority = 1/random;
+  //myproc()->priority_ratio = gen_rand(50) / 100;
+  //myproc()->arrivt = ticks;
+  //myproc()->arrivt_ratio = gen_rand(50) / 100;
+  //myproc()->exect = 0.1;
+  //myproc()->exect_ratio = gen_rand(50) / 100;
+ 
   static int first = 1;
   // Still holding ptable.lock from scheduler.
   release(&ptable.lock);
@@ -1012,7 +1035,9 @@ void print_information()
   cprintf("...............................................................................................................\n");
   for (p = ptable.proc; p< &ptable.proc[NPROC]; p++)
   {
+    int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
+
     cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
-    p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, p->rank, p->last_cycle);
+    p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, rank, p->last_cycle);
   }
 }
