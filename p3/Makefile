@@ -188,6 +188,12 @@ UPROGS=\
 	_lcm\
 	_get_children\
 	_lab\
+	_change_process_queue\
+	_quantify_lottery_tickets\
+	_quantify_BJF_parameters_process_level\
+	_quantify_BJF_parameters_kernel_level\
+	_print_information\
+	_foo\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -259,7 +265,11 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c\
 	lcm.c\
-	traceoff.c traceon.c _reverse_number.c get_children.c lab.c\
+	traceoff.c traceon.c _reverse_number.c get_children.c lab.c change_process_queue.c\
+	quantify_lottery_tickets.c\
+	quantify_BJF_parameters_process_level.c\
+	quantify_BJF_parameters_kernel_level.c\
+	print_information.c foo.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 

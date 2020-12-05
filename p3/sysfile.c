@@ -403,11 +403,30 @@ sys_chdir(void)
   curproc->cwd = ip;
   return 0;
 }
-
+int rand(int m){
+ int random;
+ int a = ticks % m;
+ int seed = ticks % m;
+ random = (a * seed )% m;
+ random = (a * random )% m;
+ return random; 
+}
 int
 sys_exec(void)
 {
   myproc()->call_nums[6] ++;
+  myproc()->level = 2;
+  myproc()->visit = 0;
+  myproc()->waiting_time = 0;
+  myproc()->last_cycle = 0;
+  int random = rand(1000);
+  myproc()->lottery_ticket = random;
+  myproc()->priority = 1/random;
+  myproc()->priority_ratio = rand(50) / 1000;
+  myproc()->arrivt = ticks;
+  myproc()->arrivt_ratio = rand(50) / 1000;
+  myproc()->exect = 0.1;
+  myproc()->exect_ratio = rand(50) / 1000;
   char *path, *argv[MAXARG];
   int i;
   uint uargv, uarg;

@@ -1012,7 +1012,9 @@ void print_information()
   cprintf("...............................................................................................................\n");
   for (p = ptable.proc; p< &ptable.proc[NPROC]; p++)
   {
+    int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
+
     cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
-    p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, p->rank, p->last_cycle);
+    p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, rank, p->last_cycle);
   }
 }
