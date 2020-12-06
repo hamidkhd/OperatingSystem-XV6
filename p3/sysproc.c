@@ -198,11 +198,11 @@ int sys_quantify_BJF_parameters_process_level(void)
 
   if(argint(0, &pid) < 0)
     return -1;
-  if(argint(0, &priority_ratio) < 0)
+  if(argint(1, &priority_ratio) < 0)
     return -1;
-  if(argint(1, &arrivt_ratio) < 0)
+  if(argint(2, &arrivt_ratio) < 0)
     return -1;
-  if(argint(1, &exect_ratio) < 0)
+  if(argint(3, &exect_ratio) < 0)
     return -1;
 
   quantify_BJF_parameters_process_level(pid, priority_ratio, arrivt_ratio, exect_ratio);
@@ -218,7 +218,7 @@ int sys_quantify_BJF_parameters_kernel_level(void)
     return -1;
   if(argint(1, &arrivt_ratio) < 0)
     return -1;
-  if(argint(1, &exect_ratio) < 0)
+  if(argint(2, &exect_ratio) < 0)
     return -1;
 
   quantify_BJF_parameters_kernel_level(priority_ratio, arrivt_ratio, exect_ratio);
@@ -227,7 +227,7 @@ int sys_quantify_BJF_parameters_kernel_level(void)
 
 int sys_print_information(void)
 {
-  //myproc()->call_nums[28] ++;
+  myproc()->call_nums[28] ++;
   print_information();
   return 0;
 }

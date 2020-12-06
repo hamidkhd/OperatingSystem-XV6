@@ -541,7 +541,7 @@ scheduler(void)
           continue;
 
         prc->waiting_time++;
-        if(prc->waiting_time >= 3000){
+        if(prc->waiting_time >= 10000){
           prc->level = 1;
           prc->waiting_time = 0;
           
@@ -997,13 +997,14 @@ void quantify_lottery_tickets(int pid, int ticket)
 void quantify_BJF_parameters_process_level(int pid, int priority_ratio, int arrivt_ratio, int exect_ratio)
 {
   struct proc* p;
+  cprintf("%d %d %d\n", priority_ratio, arrivt_ratio, exect_ratio);
   for (p = ptable.proc; p< &ptable.proc[NPROC]; p++)
   {
     if(p->pid == pid)
     {
-      p->priority_ratio = priority_ratio;
-      p->arrivt_ratio = arrivt_ratio;
-      p->exect_ratio = exect_ratio;
+      p->priority_ratio = (float)priority_ratio;
+      p->arrivt_ratio = (float)arrivt_ratio;
+      p->exect_ratio = (float)exect_ratio;
     }
   }
 }
@@ -1061,13 +1062,23 @@ void print_information()
     if(strlen(p->name) == 0)
       continue;
    
+    int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
+   
     cprintf("%s \t", p->name);
     cprintf("%d \t", p->pid);
     cprintf("%s \t", state_to_string(p->state));
     cprintf("%d \t", p->level);
-    cprintf("%d \n", p->cycle);
+    cprintf("%d \t", p->lottery_ticket);
     
-    //int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
+    cprintf("%d \t", (int) p->priority_ratio);
+    
+    cprintf("%d \t", (int) p->arrivt_ratio);
+   
+    cprintf("%d \t", (int) p->exect_ratio);
+    cprintf("%d \t", rank);
+    cprintf("%d \n", p->cycle);    
+    
+    
 
     // cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
     // p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, p->cycle, rank);

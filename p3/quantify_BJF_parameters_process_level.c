@@ -4,5 +4,6 @@
 
 int main(int argc, char* argv[]){
 	quantify_BJF_parameters_process_level(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+	printf(1, "%d %d %d\n", atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 	exit();
 }
