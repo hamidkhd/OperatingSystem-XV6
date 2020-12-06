@@ -88,6 +88,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->visit = 0;
+  p->level = 1;
 
   release(&ptable.lock);
 
@@ -453,7 +455,7 @@ scheduler(void)
     int index3 = 0;
     int run1 = 0, run2 =0, run3 = 0;
     
-    for(p = ptable.proc; p <= &ptable.proc[NPROC]; p++){
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if (strlen(p->name) == 0)
         break;
     
@@ -1033,11 +1035,16 @@ void print_information()
   struct proc* p;
   cprintf("name \t pid \t state \t queue level\t ticket \t priority_ratio \t arrivt_ratio \t exect_ratio \t rank \t cycle \n");
   cprintf("...............................................................................................................\n");
+  acquire(&ptable.lock);
   for (p = ptable.proc; p< &ptable.proc[NPROC]; p++)
   {
+    if(strlen(p->name) == 0)
+      break;
+   
     int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
 
     cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
     p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, rank, p->last_cycle);
   }
+  release(&ptable.lock);
 }

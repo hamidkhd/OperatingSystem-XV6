@@ -20,18 +20,18 @@ int
 sys_fork(void)
 {
   myproc()->call_nums[0] ++;
-  myproc()->level = 2;
-  myproc()->visit = 0;
-  myproc()->waiting_time = 0;
-  myproc()->last_cycle = 0;
-  int random = gen_rand(100);
-  myproc()->lottery_ticket = random;
-  myproc()->priority = 1/random;
-  myproc()->priority_ratio = gen_rand(50) / 100;
-  myproc()->arrivt = ticks;
-  myproc()->arrivt_ratio = gen_rand(50) / 100;
-  myproc()->exect = 0.1;
-  myproc()->exect_ratio = gen_rand(50) / 100;
+  // myproc()->level = 1;
+  // myproc()->visit = 0;
+  // myproc()->waiting_time = 0;
+  // myproc()->last_cycle = 0;
+  // int random = gen_rand(100);
+  // myproc()->lottery_ticket = random;
+  // myproc()->priority = 1/random;
+  // myproc()->priority_ratio = gen_rand(50) / 100;
+  // myproc()->arrivt = ticks;
+  // myproc()->arrivt_ratio = gen_rand(50) / 100;
+  // myproc()->exect = 0.1;
+  // myproc()->exect_ratio = gen_rand(50) / 100;
  
 
 
@@ -227,7 +227,7 @@ int sys_quantify_BJF_parameters_kernel_level(void)
 
 int sys_print_information(void)
 {
-  myproc()->call_nums[28] ++;
+  //myproc()->call_nums[28] ++;
   print_information();
   return 0;
 }
