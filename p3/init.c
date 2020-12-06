@@ -20,13 +20,13 @@ main(void)
   dup(0);  // stderr
 
   for(;;){
-    // if (fork() == 0)
-    // {
-    //   exec("print_trace", arg);
+    if (fork() == 0)
+    {
+      exec("print_trace", arg);
 
-    // }
-    // else
-    // {
+    }
+    else
+    {
       printf(1, "init: starting sh\n");
       printf(1, "init: starting sh\n");
       printf(1, "***********************************\n");
@@ -49,6 +49,6 @@ main(void)
      
       while((wpid=wait()) >= 0 && wpid != pid)// && wpid != poo)
         printf(1, "zombie!\n");
-    //}
+    }
   }
 }

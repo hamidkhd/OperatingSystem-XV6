@@ -54,11 +54,12 @@ struct proc {
   int print_state;
   int level;
   float priority, priority_ratio;
-  float arrivt, arrivt_ratio;
+  float arrivt_ratio;
   float exect, exect_ratio;
   int lottery_ticket;
   int visit;
-  int waiting_time, last_cycle;
+  int waiting_time, cycle;
+  int arrivt;
 };
 
 // Process memory is laid out contiguously, low addresses first:

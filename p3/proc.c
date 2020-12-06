@@ -89,7 +89,18 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->visit = 0;
-  p->level = 1;
+  p->level = 2;
+  p->waiting_time = 0;
+  p->cycle=0;
+  p->lottery_ticket = generate_random(100) + 1;
+  p->priority = 1 / (float) p->lottery_ticket;
+  acquire(&tickslock);
+  p->arrivt = ticks;
+  release(&tickslock);
+  p->exect = 0;
+  p->priority_ratio = 0.1;
+  p->arrivt_ratio = 0.1;
+  p->exect_ratio = 0.1;
 
   release(&ptable.lock);
 
@@ -368,6 +379,7 @@ struct proc* RR(struct proc ** list, int size){
   for (int i=0; i < size; i++){
     if(list[i]->state != RUNNABLE && list[i]->visit)
         continue;
+  
     return list[i];
   }
 
@@ -440,12 +452,13 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
   int cycle = 0;
-  
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
+    
     acquire(&ptable.lock);
     struct proc* level1 [NPROC];
     struct proc* level2 [NPROC];
@@ -457,7 +470,7 @@ scheduler(void)
     
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if (strlen(p->name) == 0)
-        break;
+       continue;
     
       if (p->level == 1){
         level1 [index1] = p;
@@ -483,6 +496,7 @@ scheduler(void)
       
     }
 
+
     if(index1 && run1){
 
       p =  RR(level1, index1);
@@ -491,11 +505,11 @@ scheduler(void)
     }
 
 
-    if (index2 && run2)
+    else if (index2 && run2)
       p = lotteryScheduling(level2, index2);
 
 
-    if (index3  && run3)
+    else if (index3  && run3)
       p = BJF(level3, index3);
 
 
@@ -503,8 +517,8 @@ scheduler(void)
     // to release ptable.lock and then reacquire it
     // before jumping back to us.
     if (run1 || run2 || run3){
-      p->waiting_time = 0;
-      p->last_cycle = cycle;
+      p->cycle++;
+      //cprintf("%s , %d\n", p->name, p->cycle);
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
@@ -518,23 +532,29 @@ scheduler(void)
       // It should have changed its p->state before coming back.
       c->proc = 0;
       cycle += 1;
+
       struct proc *prc;
-      for(prc = ptable.proc; prc >= &ptable.proc[NPROC]; prc++){
+  
+      for(prc = ptable.proc; prc < &ptable.proc[NPROC]; prc++){
+
         if (strlen(prc->name) == 0)
-          break;
-        if (prc == p)
           continue;
+
         prc->waiting_time++;
-        if(prc->waiting_time - prc->last_cycle >= 10000){
+        if(prc->waiting_time >= 3000){
           prc->level = 1;
           prc->waiting_time = 0;
-          prc->last_cycle = cycle;
+          
         }
 
       }
+     
+      
+      p->waiting_time = 0;
     }
   release(&ptable.lock);
   }
+  
 }
 
 // Enter scheduler.  Must hold only ptable.lock
@@ -579,10 +599,10 @@ void
 forkret(void)
 {
   myproc()->call_nums[0] ++;
-  myproc()->level = 1;
-  myproc()->visit = 0;
-  myproc()->waiting_time = 0;
-  myproc()->last_cycle = 0;
+  // myproc()->level = 1;
+  // myproc()->visit = 0;
+  // myproc()->waiting_time = 0;
+  // myproc()->last_cycle = 0;
   //int random = gen_rand(100);
   //myproc()->lottery_ticket = random;
   //myproc()->priority = 1/random;
@@ -1035,16 +1055,22 @@ void print_information()
   struct proc* p;
   cprintf("name \t pid \t state \t queue level\t ticket \t priority_ratio \t arrivt_ratio \t exect_ratio \t rank \t cycle \n");
   cprintf("...............................................................................................................\n");
-  acquire(&ptable.lock);
+  //acquire(&ptable.lock);
   for (p = ptable.proc; p< &ptable.proc[NPROC]; p++)
   {
     if(strlen(p->name) == 0)
-      break;
+      continue;
    
-    int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
+    cprintf("%s \t", p->name);
+    cprintf("%d \t", p->pid);
+    cprintf("%s \t", state_to_string(p->state));
+    cprintf("%d \t", p->level);
+    cprintf("%d \n", p->cycle);
+    
+    //int rank = p->priority * p->priority_ratio + p->arrivt * p->arrivt_ratio + p->exect * p->exect_ratio;
 
-    cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
-    p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, rank, p->last_cycle);
+    // cprintf("%s \t %d \t %s \t %d \t %d \t %d \t %d \t %d \t %d \t %d \n", 
+    // p->name, p->pid, state_to_string(p->state), p->level, p->lottery_ticket, p->priority_ratio, p->arrivt_ratio, p->exect_ratio, p->cycle, rank);
   }
-  release(&ptable.lock);
+  //release(&ptable.lock);
 }

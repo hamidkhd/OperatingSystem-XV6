@@ -32,14 +32,12 @@ int main(int argc, char* argv[]){
   2b:	56                   	push   %esi
   2c:	50                   	push   %eax
   2d:	e8 20 03 00 00       	call   352 <quantify_lottery_tickets>
-  32:	8d 65 f4             	lea    -0xc(%ebp),%esp
-  35:	31 c0                	xor    %eax,%eax
-  37:	59                   	pop    %ecx
-  38:	5b                   	pop    %ebx
-  39:	5e                   	pop    %esi
-  3a:	5d                   	pop    %ebp
-  3b:	8d 61 fc             	lea    -0x4(%ecx),%esp
-  3e:	c3                   	ret    
+	exit();
+  32:	e8 5b 02 00 00       	call   292 <exit>
+  37:	66 90                	xchg   %ax,%ax
+  39:	66 90                	xchg   %ax,%ax
+  3b:	66 90                	xchg   %ax,%ax
+  3d:	66 90                	xchg   %ax,%ax
   3f:	90                   	nop
 
 00000040 <strcpy>:
@@ -975,7 +973,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 5f1:	a1 3c 0a 00 00       	mov    0xa3c,%eax
+ 5f1:	a1 2c 0a 00 00       	mov    0xa2c,%eax
 {
  5f6:	89 e5                	mov    %esp,%ebp
  5f8:	57                   	push   %edi
@@ -1016,7 +1014,7 @@ free(void *ap)
     p->s.ptr = bp;
  62d:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 62f:	a3 3c 0a 00 00       	mov    %eax,0xa3c
+ 62f:	a3 2c 0a 00 00       	mov    %eax,0xa2c
 }
  634:	5b                   	pop    %ebx
  635:	5e                   	pop    %esi
@@ -1048,7 +1046,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  667:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 66a:	a3 3c 0a 00 00       	mov    %eax,0xa3c
+ 66a:	a3 2c 0a 00 00       	mov    %eax,0xa2c
     p->s.size += bp->s.size;
  66f:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1081,7 +1079,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  689:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 68c:	8b 15 3c 0a 00 00    	mov    0xa3c,%edx
+ 68c:	8b 15 2c 0a 00 00    	mov    0xa2c,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  692:	8d 78 07             	lea    0x7(%eax),%edi
  695:	c1 ef 03             	shr    $0x3,%edi
@@ -1118,7 +1116,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 6d1:	39 05 3c 0a 00 00    	cmp    %eax,0xa3c
+ 6d1:	39 05 2c 0a 00 00    	cmp    %eax,0xa2c
  6d7:	89 c2                	mov    %eax,%edx
  6d9:	75 ed                	jne    6c8 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1137,7 +1135,7 @@ malloc(uint nbytes)
  6f5:	50                   	push   %eax
  6f6:	e8 f5 fe ff ff       	call   5f0 <free>
   return freep;
- 6fb:	8b 15 3c 0a 00 00    	mov    0xa3c,%edx
+ 6fb:	8b 15 2c 0a 00 00    	mov    0xa2c,%edx
       if((p = morecore(nunits)) == 0)
  701:	83 c4 10             	add    $0x10,%esp
  704:	85 d2                	test   %edx,%edx
@@ -1166,7 +1164,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  724:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 727:	89 15 3c 0a 00 00    	mov    %edx,0xa3c
+ 727:	89 15 2c 0a 00 00    	mov    %edx,0xa2c
 }
  72d:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1180,13 +1178,13 @@ malloc(uint nbytes)
  738:	90                   	nop
  739:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 740:	c7 05 3c 0a 00 00 40 	movl   $0xa40,0xa3c
+ 740:	c7 05 2c 0a 00 00 30 	movl   $0xa30,0xa2c
  747:	0a 00 00 
- 74a:	c7 05 40 0a 00 00 40 	movl   $0xa40,0xa40
+ 74a:	c7 05 30 0a 00 00 30 	movl   $0xa30,0xa30
  751:	0a 00 00 
     base.s.size = 0;
- 754:	b8 40 0a 00 00       	mov    $0xa40,%eax
- 759:	c7 05 44 0a 00 00 00 	movl   $0x0,0xa44
+ 754:	b8 30 0a 00 00       	mov    $0xa30,%eax
+ 759:	c7 05 34 0a 00 00 00 	movl   $0x0,0xa34
  760:	00 00 00 
  763:	e9 44 ff ff ff       	jmp    6ac <malloc+0x2c>
  768:	90                   	nop

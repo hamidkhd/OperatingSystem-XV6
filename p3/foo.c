@@ -5,10 +5,11 @@
 
 int main(int argc, char *argv[])
 {
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 4; i++)
     {
-        if(fork() == 0)
+        if(fork() == 0){
             while(1);
+        }
 
     }
     

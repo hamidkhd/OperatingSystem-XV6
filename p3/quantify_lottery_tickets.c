@@ -4,4 +4,5 @@
 
 int main(int argc, char* argv[]){
 	quantify_lottery_tickets(atoi(argv[1]), atoi(argv[2]));
+	exit();
 }

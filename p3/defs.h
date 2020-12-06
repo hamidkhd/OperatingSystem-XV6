@@ -128,6 +128,7 @@ void            quantify_lottery_tickets(int, int);
 void            quantify_BJF_parameters_process_level(int, int, int, int);
 void            quantify_BJF_parameters_kernel_level(int, int, int);
 void            print_information(void);
+int             generate_random(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -37,16 +37,14 @@ int main(int argc, char* argv[]){
   39:	56                   	push   %esi
   3a:	50                   	push   %eax
   3b:	e8 32 03 00 00       	call   372 <quantify_BJF_parameters_kernel_level>
-  40:	8d 65 f0             	lea    -0x10(%ebp),%esp
-  43:	31 c0                	xor    %eax,%eax
-  45:	59                   	pop    %ecx
-  46:	5b                   	pop    %ebx
-  47:	5e                   	pop    %esi
-  48:	5f                   	pop    %edi
-  49:	5d                   	pop    %ebp
-  4a:	8d 61 fc             	lea    -0x4(%ecx),%esp
-  4d:	c3                   	ret    
-  4e:	66 90                	xchg   %ax,%ax
+	exit();
+  40:	e8 5d 02 00 00       	call   2a2 <exit>
+  45:	66 90                	xchg   %ax,%ax
+  47:	66 90                	xchg   %ax,%ax
+  49:	66 90                	xchg   %ax,%ax
+  4b:	66 90                	xchg   %ax,%ax
+  4d:	66 90                	xchg   %ax,%ax
+  4f:	90                   	nop
 
 00000050 <strcpy>:
 #include "user.h"
@@ -981,7 +979,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 601:	a1 54 0a 00 00       	mov    0xa54,%eax
+ 601:	a1 40 0a 00 00       	mov    0xa40,%eax
 {
  606:	89 e5                	mov    %esp,%ebp
  608:	57                   	push   %edi
@@ -1022,7 +1020,7 @@ free(void *ap)
     p->s.ptr = bp;
  63d:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 63f:	a3 54 0a 00 00       	mov    %eax,0xa54
+ 63f:	a3 40 0a 00 00       	mov    %eax,0xa40
 }
  644:	5b                   	pop    %ebx
  645:	5e                   	pop    %esi
@@ -1054,7 +1052,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  677:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 67a:	a3 54 0a 00 00       	mov    %eax,0xa54
+ 67a:	a3 40 0a 00 00       	mov    %eax,0xa40
     p->s.size += bp->s.size;
  67f:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1087,7 +1085,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  699:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 69c:	8b 15 54 0a 00 00    	mov    0xa54,%edx
+ 69c:	8b 15 40 0a 00 00    	mov    0xa40,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  6a2:	8d 78 07             	lea    0x7(%eax),%edi
  6a5:	c1 ef 03             	shr    $0x3,%edi
@@ -1124,7 +1122,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 6e1:	39 05 54 0a 00 00    	cmp    %eax,0xa54
+ 6e1:	39 05 40 0a 00 00    	cmp    %eax,0xa40
  6e7:	89 c2                	mov    %eax,%edx
  6e9:	75 ed                	jne    6d8 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1143,7 +1141,7 @@ malloc(uint nbytes)
  705:	50                   	push   %eax
  706:	e8 f5 fe ff ff       	call   600 <free>
   return freep;
- 70b:	8b 15 54 0a 00 00    	mov    0xa54,%edx
+ 70b:	8b 15 40 0a 00 00    	mov    0xa40,%edx
       if((p = morecore(nunits)) == 0)
  711:	83 c4 10             	add    $0x10,%esp
  714:	85 d2                	test   %edx,%edx
@@ -1172,7 +1170,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  734:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 737:	89 15 54 0a 00 00    	mov    %edx,0xa54
+ 737:	89 15 40 0a 00 00    	mov    %edx,0xa40
 }
  73d:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1186,13 +1184,13 @@ malloc(uint nbytes)
  748:	90                   	nop
  749:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 750:	c7 05 54 0a 00 00 58 	movl   $0xa58,0xa54
+ 750:	c7 05 40 0a 00 00 44 	movl   $0xa44,0xa40
  757:	0a 00 00 
- 75a:	c7 05 58 0a 00 00 58 	movl   $0xa58,0xa58
+ 75a:	c7 05 44 0a 00 00 44 	movl   $0xa44,0xa44
  761:	0a 00 00 
     base.s.size = 0;
- 764:	b8 58 0a 00 00       	mov    $0xa58,%eax
- 769:	c7 05 5c 0a 00 00 00 	movl   $0x0,0xa5c
+ 764:	b8 44 0a 00 00       	mov    $0xa44,%eax
+ 769:	c7 05 48 0a 00 00 00 	movl   $0x0,0xa48
  770:	00 00 00 
  773:	e9 44 ff ff ff       	jmp    6bc <malloc+0x2c>
  778:	90                   	nop

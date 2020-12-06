@@ -16,22 +16,26 @@ int main(int argc, char *argv[])
    7:	ff 71 fc             	pushl  -0x4(%ecx)
    a:	55                   	push   %ebp
    b:	89 e5                	mov    %esp,%ebp
-   d:	51                   	push   %ecx
-   e:	83 ec 04             	sub    $0x4,%esp
-    for (int i = 0; i < 2; i++)
+   d:	53                   	push   %ebx
+   e:	51                   	push   %ecx
+   f:	bb 04 00 00 00       	mov    $0x4,%ebx
+    for (int i = 0; i < 4; i++)
     {
-        if(fork() == 0)
-  11:	e8 64 02 00 00       	call   27a <fork>
-  16:	e8 5f 02 00 00       	call   27a <fork>
-            for (int j = 0; j < 100000; j++); 
+        if(fork() == 0){
+  14:	e8 61 02 00 00       	call   27a <fork>
+  19:	85 c0                	test   %eax,%eax
+  1b:	74 0a                	je     27 <main+0x27>
+    for (int i = 0; i < 4; i++)
+  1d:	83 eb 01             	sub    $0x1,%ebx
+  20:	75 f2                	jne    14 <main+0x14>
+            while(1);
+        }
 
     }
-    wait();
-  1b:	e8 6a 02 00 00       	call   28a <wait>
+    
     exit();
-  20:	e8 5d 02 00 00       	call   282 <exit>
-  25:	66 90                	xchg   %ax,%ax
-  27:	66 90                	xchg   %ax,%ax
+  22:	e8 5b 02 00 00       	call   282 <exit>
+  27:	eb fe                	jmp    27 <main+0x27>
   29:	66 90                	xchg   %ax,%ax
   2b:	66 90                	xchg   %ax,%ax
   2d:	66 90                	xchg   %ax,%ax
@@ -970,7 +974,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 5e1:	a1 14 0a 00 00       	mov    0xa14,%eax
+ 5e1:	a1 18 0a 00 00       	mov    0xa18,%eax
 {
  5e6:	89 e5                	mov    %esp,%ebp
  5e8:	57                   	push   %edi
@@ -1011,7 +1015,7 @@ free(void *ap)
     p->s.ptr = bp;
  61d:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 61f:	a3 14 0a 00 00       	mov    %eax,0xa14
+ 61f:	a3 18 0a 00 00       	mov    %eax,0xa18
 }
  624:	5b                   	pop    %ebx
  625:	5e                   	pop    %esi
@@ -1043,7 +1047,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  657:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 65a:	a3 14 0a 00 00       	mov    %eax,0xa14
+ 65a:	a3 18 0a 00 00       	mov    %eax,0xa18
     p->s.size += bp->s.size;
  65f:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1076,7 +1080,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  679:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 67c:	8b 15 14 0a 00 00    	mov    0xa14,%edx
+ 67c:	8b 15 18 0a 00 00    	mov    0xa18,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  682:	8d 78 07             	lea    0x7(%eax),%edi
  685:	c1 ef 03             	shr    $0x3,%edi
@@ -1113,7 +1117,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 6c1:	39 05 14 0a 00 00    	cmp    %eax,0xa14
+ 6c1:	39 05 18 0a 00 00    	cmp    %eax,0xa18
  6c7:	89 c2                	mov    %eax,%edx
  6c9:	75 ed                	jne    6b8 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1132,7 +1136,7 @@ malloc(uint nbytes)
  6e5:	50                   	push   %eax
  6e6:	e8 f5 fe ff ff       	call   5e0 <free>
   return freep;
- 6eb:	8b 15 14 0a 00 00    	mov    0xa14,%edx
+ 6eb:	8b 15 18 0a 00 00    	mov    0xa18,%edx
       if((p = morecore(nunits)) == 0)
  6f1:	83 c4 10             	add    $0x10,%esp
  6f4:	85 d2                	test   %edx,%edx
@@ -1161,7 +1165,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  714:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 717:	89 15 14 0a 00 00    	mov    %edx,0xa14
+ 717:	89 15 18 0a 00 00    	mov    %edx,0xa18
 }
  71d:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1175,13 +1179,13 @@ malloc(uint nbytes)
  728:	90                   	nop
  729:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 730:	c7 05 14 0a 00 00 18 	movl   $0xa18,0xa14
+ 730:	c7 05 18 0a 00 00 1c 	movl   $0xa1c,0xa18
  737:	0a 00 00 
- 73a:	c7 05 18 0a 00 00 18 	movl   $0xa18,0xa18
+ 73a:	c7 05 1c 0a 00 00 1c 	movl   $0xa1c,0xa1c
  741:	0a 00 00 
     base.s.size = 0;
- 744:	b8 18 0a 00 00       	mov    $0xa18,%eax
- 749:	c7 05 1c 0a 00 00 00 	movl   $0x0,0xa1c
+ 744:	b8 1c 0a 00 00       	mov    $0xa1c,%eax
+ 749:	c7 05 20 0a 00 00 00 	movl   $0x0,0xa20
  750:	00 00 00 
  753:	e9 44 ff ff ff       	jmp    69c <malloc+0x2c>
  758:	90                   	nop
