@@ -26,3 +26,6 @@
 #define SYS_semaphore_release 24
 #define SYS_cv_wait 25
 #define SYS_cv_signal 26
+#define SYS_readers 27
+#define SYS_writers 28
+#define SYS_init_spinlock 29

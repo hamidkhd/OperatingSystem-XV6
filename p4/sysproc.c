@@ -162,3 +162,21 @@ sys_cv_signal(void)
 
   return 0;
 }
+
+int sys_readers(void)
+{
+  readers();
+  return 0;
+}
+
+int sys_writers(void)
+{
+  writers();
+  return 0;
+}
+
+int sys_init_spinlock(void)
+{
+  init_spinlock();
+  return 0;
+}

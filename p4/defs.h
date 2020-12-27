@@ -127,6 +127,9 @@ void            semaphore_aquire(int);
 void            semaphore_release(int);
 void            cv_wait(struct Condvar*);
 void            cv_signal(struct Condvar*);
+void            readers(void);
+void            writers(void);
+void            init_spinlock(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

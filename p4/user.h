@@ -30,6 +30,9 @@ int semaphore_aquire(int);
 int semaphore_release(int);
 int cv_wait(struct Condvar*);
 int cv_signal(struct Condvar*);
+int readers(void);
+int writers(void);
+int init_spinlock(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

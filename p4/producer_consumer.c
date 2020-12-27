@@ -38,7 +38,7 @@ int main()
 void producer()
 {
     int read_counter = 0;
-    while(read_counter <= 15)
+    while(read_counter <= 10)
     {
         printf(1, "Produce an item in next_produced! Index: %d \n", read_counter);
 
@@ -60,7 +60,7 @@ void producer()
 void consumer()
 {
     int write_counter = 0;
-    while(write_counter <= 15)
+    while(write_counter <= 10)
     {
         semaphore_aquire(FULL);
         semaphore_aquire(MUTEX);

@@ -184,6 +184,7 @@ UPROGS=\
 	_lcm\
 	_producer_consumer\
 	_condvar\
+	_reader_writer\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -256,6 +257,7 @@ EXTRA=\
 	lcm.c\
 	producer_consumer.c\
 	condvar.c\
+	reader_writer.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\

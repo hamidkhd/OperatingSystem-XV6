@@ -29,8 +29,12 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
+
 SYSCALL(semaphore_initialize);
 SYSCALL(semaphore_aquire);
 SYSCALL(semaphore_release);
 SYSCALL(cv_wait);
 SYSCALL(cv_signal);
+SYSCALL(readers);
+SYSCALL(writers);
+SYSCALL(init_spinlock);

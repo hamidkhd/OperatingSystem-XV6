@@ -27,6 +27,13 @@ struct Condvar{
 };
 
 struct Semaphore semaphore[5];
+struct Condvar* turn;
+struct spinlock spin;
+
+int reader_count = 0;
+int writer_count = 0;
+int reading_count = 0;
+int writing_count = 0;
 
 int nextpid = 1;
 extern void forkret(void);
@@ -630,4 +637,55 @@ void cv_wait(struct Condvar* condvar)
 void cv_signal(struct Condvar* condvar)
 {
   wakeup(condvar);
+}
+
+void readers(void)
+{
+  acquire(&spin);
+
+  if (writer_count)
+    cv_wait(turn);
+
+  while (writing_count)
+    cv_wait(turn);
+
+  reading_count++;
+
+  release(&spin);
+
+  acquire(&spin);
+
+  reading_count--;
+
+  cv_signal(turn);
+
+  release(&spin);
+}
+
+void writers(void)
+{
+  acquire(&spin);
+
+  writer_count++;
+
+  while (reading_count || writing_count)
+    cv_wait(turn);
+
+  writing_count++;
+
+  release(&spin);
+
+  acquire(&spin);
+  
+  writing_count--;
+  writer_count--;
+
+  cv_signal(turn);
+
+  release(&spin);
+}
+
+void init_spinlock(void)
+{
+  initlock(&spin, "reader");
 }
