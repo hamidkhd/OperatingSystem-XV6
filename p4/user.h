@@ -1,6 +1,6 @@
 struct stat;
 struct rtcdate;
-struct condvar;
+struct Condvar;
 
 // system calls
 int fork(void);
@@ -28,8 +28,8 @@ int uptime(void);
 int semaphore_initialize(int, int, int);
 int semaphore_aquire(int);
 int semaphore_release(int);
-int cv_wait(struct condvar*);
-int cv_signal(struct condvar*);
+int cv_wait(struct Condvar*);
+int cv_signal(struct Condvar*);
 
 // ulib.c
 int stat(const char*, struct stat*);

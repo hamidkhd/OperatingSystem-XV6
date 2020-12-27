@@ -183,6 +183,7 @@ UPROGS=\
 	_zombie\
 	_lcm\
 	_producer_consumer\
+	_condvar\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -254,6 +255,7 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	lcm.c\
 	producer_consumer.c\
+	condvar.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\

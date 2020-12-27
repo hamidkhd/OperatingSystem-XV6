@@ -138,12 +138,13 @@ sys_semaphore_release(void)
 int 
 sys_cv_wait(void)
 {
-  struct Condvar* condvar;
+  struct Condvar* _condvar;
+  char* condvar;
 
-  if (argptr(0, (void*)&condvar, sizeof(condvar)) == -1)
+  if (argptr(0, &condvar, sizeof(_condvar)) == -1)
     return -1;
 
-  cv_wait(condvar);
+  cv_wait((struct Condvar *)condvar);
 
   return 0;
 }
@@ -151,12 +152,13 @@ sys_cv_wait(void)
 int 
 sys_cv_signal(void)
 {
-  struct Condvar* condvar;
+  struct Condvar* _condvar;
+  char* condvar;
 
-  if (argptr(0, (void*)&condvar, sizeof(condvar)) == -1)
+  if (argptr(0, &condvar, sizeof(_condvar)) == -1)
     return -1;
 
-  cv_signal(condvar);
+  cv_signal((struct Condvar *)condvar);
 
   return 0;
 }

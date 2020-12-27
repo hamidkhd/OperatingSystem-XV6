@@ -603,20 +603,31 @@ void semaphore_release(int i)
   release(&semaphore[i].lock);
 }
 
+void sleep1(void *chan)
+{
+  acquire(&ptable.lock);
+
+  struct proc *p = myproc();
+  
+  if (p == 0)
+    panic("sleep");
+
+  p->chan = chan;
+  p->state = SLEEPING;
+
+  sched();
+
+  p->chan = 0;
+
+  release(&ptable.lock);
+}
+
 void cv_wait(struct Condvar* condvar)
 {
-  acquire(&condvar->lock);
-
-  sleep(myproc(), &condvar->lock);
-  
-  release(&condvar->lock);
+  sleep1(condvar);  
 }
 
 void cv_signal(struct Condvar* condvar)
 {
-  acquire(&condvar->lock);
-
-  wakeup(myproc());
-
-  release(&condvar->lock);
+  wakeup(condvar);
 }
