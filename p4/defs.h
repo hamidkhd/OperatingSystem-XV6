@@ -9,6 +9,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct Condvar;
 
 // bio.c
 void            binit(void);
@@ -120,6 +121,12 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+
+void            semaphore_initialize(int, int, int);
+void            semaphore_aquire(int);
+void            semaphore_release(int);
+void            cv_wait(struct Condvar*);
+void            cv_signal(struct Condvar*);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

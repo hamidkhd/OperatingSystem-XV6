@@ -89,3 +89,74 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_semaphore_initialize(void)
+{
+  int i, v, m;
+  
+  if(argint(0, &i) < 0)
+    return -1;
+
+  if(argint(1, &v) < 0)
+    return -1;
+
+  if(argint(2, &m) < 0)
+    return -1;
+
+  semaphore_initialize(i, v, m);
+
+  return 0;
+}
+
+int
+sys_semaphore_aquire(void)
+{
+  int i;
+
+  if(argint(0, &i) < 0)
+    return -1;
+
+  semaphore_aquire(i);
+
+  return 0;
+}
+
+int
+sys_semaphore_release(void)
+{
+  int i;
+  
+  if(argint(0, &i) < 0)
+    return -1;
+
+  semaphore_release(i);
+
+  return 0;
+}
+
+int 
+sys_cv_wait(void)
+{
+  struct Condvar* condvar;
+
+  if (argptr(0, (void*)&condvar, sizeof(condvar)) == -1)
+    return -1;
+
+  cv_wait(condvar);
+
+  return 0;
+}
+
+int 
+sys_cv_signal(void)
+{
+  struct Condvar* condvar;
+
+  if (argptr(0, (void*)&condvar, sizeof(condvar)) == -1)
+    return -1;
+
+  cv_signal(condvar);
+
+  return 0;
+}

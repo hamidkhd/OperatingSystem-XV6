@@ -14,6 +14,20 @@ struct {
 
 static struct proc *initproc;
 
+struct Semaphore{
+  int m;
+  int v;
+  struct spinlock lock;
+  struct proc* list[NPROC];
+  int last_proc_in_queue;
+};
+
+struct Condvar{
+  struct spinlock lock;
+};
+
+struct Semaphore semaphore[5];
+
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -531,4 +545,78 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+void semaphore_initialize(int i, int v, int m)
+{
+  semaphore[i].v = v;
+  semaphore[i].m = m;
+  semaphore[i].last_proc_in_queue = -1;
+
+  char lock_name = i + 48;
+  initlock(&semaphore[i].lock, &lock_name);
+}
+
+void semaphore_aquire(int i)
+{
+  acquire(&semaphore[i].lock);
+
+  if (semaphore[i].m >= semaphore[i].v)
+  {
+    semaphore[i].list[++semaphore[i].last_proc_in_queue] = myproc();    
+    sleep(myproc(), &semaphore[i].lock);
+  }
+  else
+  {
+    semaphore[i].m++;
+  }
+  
+  release(&semaphore[i].lock);
+}
+
+void semaphore_release(int i)
+{
+  acquire(&semaphore[i].lock);
+
+  if (semaphore[i].m == semaphore[i].v && semaphore[i].last_proc_in_queue > -1)
+  {
+
+    struct proc* p = semaphore[i].list[0];
+
+    for (int x = 1; x <= semaphore[i].last_proc_in_queue; x++)
+    {
+      semaphore[i].list[x-1] = semaphore[i].list[x];
+    }
+
+    semaphore[i].last_proc_in_queue--;
+    wakeup(p);
+  }
+  else if (semaphore[i].m < semaphore[i].v && semaphore[i].m > 0)
+  {
+    semaphore[i].m--;
+  }
+  else if (semaphore[i].m == semaphore[i].v && semaphore[i].last_proc_in_queue == -1)
+  {
+    semaphore[i].m--;
+  }
+
+  release(&semaphore[i].lock);
+}
+
+void cv_wait(struct Condvar* condvar)
+{
+  acquire(&condvar->lock);
+
+  sleep(myproc(), &condvar->lock);
+  
+  release(&condvar->lock);
+}
+
+void cv_signal(struct Condvar* condvar)
+{
+  acquire(&condvar->lock);
+
+  wakeup(myproc());
+
+  release(&condvar->lock);
 }
