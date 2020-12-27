@@ -35,6 +35,8 @@ int writer_count = 0;
 int reading_count = 0;
 int writing_count = 0;
 int data_value = 0;
+int reader_numbers = 0;
+int writer_numbers = 0;
 
 int nextpid = 1;
 extern void forkret(void);
@@ -651,10 +653,11 @@ void readers(void)
     sleep(&turn, &spin);
 
   reading_count++;
+  reader_numbers++;
 
   release(&spin);
 
-  cprintf("Reading is Performed! data value: %d\n", data_value);
+  cprintf("Reading is Performed! data value: %d and reader id: %d\n", data_value, reader_numbers);
 
   acquire(&spin);
 
@@ -675,11 +678,12 @@ void writers(void)
     sleep(&turn, &spin);
 
   writing_count++;
+  writer_numbers++;
 
   release(&spin);
 
   data_value++;
-  cprintf("Writing is Performed! data value: %d\n", data_value);
+  cprintf("Writing is Performed! data value: %d and writer id: %d\n", data_value, writer_numbers);
 
   acquire(&spin);
   

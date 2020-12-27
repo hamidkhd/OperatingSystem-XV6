@@ -6,7 +6,7 @@ int main()
 {
     init_spinlock();
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
     {
         int pid = fork();
         if (pid == -1)
