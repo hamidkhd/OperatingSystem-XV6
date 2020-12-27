@@ -27,13 +27,14 @@ struct Condvar{
 };
 
 struct Semaphore semaphore[5];
-struct Condvar* turn;
+struct Condvar turn;
 struct spinlock spin;
 
 int reader_count = 0;
 int writer_count = 0;
 int reading_count = 0;
 int writing_count = 0;
+int data_value = 0;
 
 int nextpid = 1;
 extern void forkret(void);
@@ -644,20 +645,22 @@ void readers(void)
   acquire(&spin);
 
   if (writer_count)
-    cv_wait(turn);
+    sleep(&turn, &spin);
 
   while (writing_count)
-    cv_wait(turn);
+    sleep(&turn, &spin);
 
   reading_count++;
 
   release(&spin);
 
+  cprintf("Reading is Performed! data value: %d\n", data_value);
+
   acquire(&spin);
 
   reading_count--;
 
-  cv_signal(turn);
+  cv_signal(&turn);
 
   release(&spin);
 }
@@ -669,18 +672,21 @@ void writers(void)
   writer_count++;
 
   while (reading_count || writing_count)
-    cv_wait(turn);
+    sleep(&turn, &spin);
 
   writing_count++;
 
   release(&spin);
+
+  data_value++;
+  cprintf("Writing is Performed! data value: %d\n", data_value);
 
   acquire(&spin);
   
   writing_count--;
   writer_count--;
 
-  cv_signal(turn);
+  cv_signal(&turn);
 
   release(&spin);
 }

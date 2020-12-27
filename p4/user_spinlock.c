@@ -17,12 +17,12 @@ void initlock(struct spinlock *lk, char *name)
   lk->locked = 0;
 }
 
-void acquire(struct spinlock *lk)
+void lock(struct spinlock *lk)
 {
   while(xchg(&lk->locked, 1) != 0);
 }
 
-void release(struct spinlock *lk)
+void unlock(struct spinlock *lk)
 {
   asm volatile("movl $0, %0" : "+m" (lk->locked) : );
 }

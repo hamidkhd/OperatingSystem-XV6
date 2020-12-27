@@ -16,11 +16,11 @@ int main()
         }
         else if (pid == 0)
         {
-            readers();
+            writers();
         }
         else
         {
-            writers();
+            readers();
             wait();
         }
     }
